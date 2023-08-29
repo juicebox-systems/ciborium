@@ -105,9 +105,14 @@ impl<R: Read> Decoder<R> {
     #[inline]
     pub fn pull(&mut self) -> Result<Header, Error<R::Error>> {
         let offset = self.offset;
-        self.pull_title()?
-            .try_into()
-            .map_err(|_| Error::Syntax(offset))
+        let title = self.pull_title()?;
+
+        // Enforce stricter deserialization subset.
+        if !title.allowed_strict() {
+            return Err(Error::Syntax(offset));
+        }
+
+        title.try_into().map_err(|_| Error::Syntax(offset))
     }
 
     /// Push a single header into the input buffer
