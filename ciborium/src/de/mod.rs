@@ -826,7 +826,7 @@ where
     let mut reader = Deserializer {
         decoder: reader.into(),
         scratch: &mut scratch,
-        recurse: 256,
+        recurse: 16,
     };
 
     T::deserialize(&mut reader)
