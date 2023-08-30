@@ -92,6 +92,7 @@ fn negative_numbers() {
 }
 
 #[test]
+#[ignore] // tags are disabled for strict deserializer
 fn tagged_option() {
     let mut opt = Some(Required::<u64, 0xff>(2u32.into()));
 

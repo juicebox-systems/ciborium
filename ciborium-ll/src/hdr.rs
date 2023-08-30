@@ -1,7 +1,5 @@
 use super::*;
 
-use half::f16;
-
 /// A semantic representation of a CBOR item header
 ///
 /// This structure represents the valid values of a CBOR item header and is
@@ -108,7 +106,7 @@ impl TryFrom<Title> for Header {
             Title(Major::Other, Minor::More) => Self::Break,
             Title(Major::Other, Minor::This(x)) => Self::Simple(x),
             Title(Major::Other, Minor::Next1(x)) => Self::Simple(x[0]),
-            Title(Major::Other, Minor::Next2(x)) => Self::Float(f16::from_be_bytes(x).into()),
+            Title(Major::Other, Minor::Next2(_)) => return Err(InvalidError(())),
             Title(Major::Other, Minor::Next4(x)) => Self::Float(f32::from_be_bytes(x).into()),
             Title(Major::Other, Minor::Next8(x)) => Self::Float(f64::from_be_bytes(x)),
         })
@@ -144,14 +142,11 @@ impl From<Header> for Title {
             },
 
             Header::Float(n64) => {
-                let n16 = f16::from_f64(n64);
                 let n32 = n64 as f32;
 
                 Title(
                     Major::Other,
-                    if f64::from(n16).to_bits() == n64.to_bits() {
-                        Minor::Next2(n16.to_be_bytes())
-                    } else if f64::from(n32).to_bits() == n64.to_bits() {
+                    if f64::from(n32).to_bits() == n64.to_bits() {
                         Minor::Next4(n32.to_be_bytes())
                     } else {
                         Minor::Next8(n64.to_be_bytes())

@@ -8,6 +8,7 @@ use serde::{de::DeserializeOwned, Serialize};
 
 use core::fmt::Debug;
 
+#[ignore] // tags disallowed in strict deserializer
 #[rstest(item, bytes, value, encode, success,
     case(Captured(Some(6), true), "c6f5", Value::Tag(6, Value::Bool(true).into()), true, true),
     case(Captured(None, true), "f5", Value::Bool(true), true, true),

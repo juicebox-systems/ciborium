@@ -18,16 +18,16 @@ use rstest::rstest;
     case("83011f03", Error::Syntax(2)),
 
     // Integer in a string continuation
-    case("7F616101FF", Error::Syntax(3)),
+    case("7F616101FF", Error::Syntax(0 /* indeterminate string disallowed. was: 3 */)),
 
     // Bytes in a string continuation
-    case("7F61614101FF", Error::Syntax(3)),
+    case("7F61614101FF", Error::Syntax(0 /* indeterminate string disallowed. was: 3 */)),
 
     // Invalid UTF-8
     case("62C328", Error::Syntax(0)),
 
     // Invalid UTF-8 in a string continuation
-    case("7F62C328FF", Error::Syntax(1)),
+    case("7F62C328FF", Error::Syntax(0 /* indeterminate string disallowed. was: 1 */)),
 )]
 fn test(bytes: &str, error: Error<std::io::Error>) {
     let bytes = hex::decode(bytes).unwrap();

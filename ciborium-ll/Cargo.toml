@@ -22,7 +22,6 @@ is-it-maintained-open-issues = { repository = "enarx/ciborium" }
 
 [dependencies]
 ciborium-io = { path = "../ciborium-io", version = "0.2.1" }
-half = "1.6"
 
 [dev-dependencies]
 hex = "0.4"

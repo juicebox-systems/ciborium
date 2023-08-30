@@ -68,6 +68,10 @@ macro_rules! map {
     case(1i32,  val!(1i32),  "1b0000000000000001", true, same),
     case(1i64,  val!(1i64),  "1b0000000000000001", true, same),
     case(1i128, val!(1i128), "1b0000000000000001", true, same),
+    // Note: many tests are commented out because they are not allowed in
+    // strict deserialization mode. Use <https://cbor.io/tools.html> to decode
+    // the hex strings, which can help you see what features are being tested.
+    /*
     case(1u8,   bigint(), "c2540000000000000000000000000000000000000001", true, same), // Not In RFC
     case(1u16,  bigint(), "c2540000000000000000000000000000000000000001", true, same), // Not In RFC
     case(1u32,  bigint(), "c2540000000000000000000000000000000000000001", true, same), // Not In RFC
@@ -78,6 +82,7 @@ macro_rules! map {
     case(1i32,  bigint(), "c2540000000000000000000000000000000000000001", true, same), // Not In RFC
     case(1i64,  bigint(), "c2540000000000000000000000000000000000000001", true, same), // Not In RFC
     case(1i128, bigint(), "c2540000000000000000000000000000000000000001", true, same), // Not In RFC
+    */
     case(10u8,   val!(10u8),   "0a", false, same),
     case(10u16,  val!(10u16),  "0a", false, same),
     case(10u32,  val!(10u32),  "0a", false, same),
@@ -149,9 +154,9 @@ macro_rules! map {
     case(18446744073709551615u64,  val!(18446744073709551615u64),  "1bffffffffffffffff", false, same),
     case(18446744073709551615u128, val!(18446744073709551615u128), "1bffffffffffffffff", false, same),
     case(18446744073709551615i128, val!(18446744073709551615i128), "1bffffffffffffffff", false, same),
-    case(18446744073709551616u128, val!(18446744073709551616u128), "c249010000000000000000", false, same),
-    case(18446744073709551616i128, val!(18446744073709551616i128), "c249010000000000000000", false, same),
-    case(-18446744073709551617i128, val!(-18446744073709551617i128), "c349010000000000000000", false, same),
+    //case(18446744073709551616u128, val!(18446744073709551616u128), "c249010000000000000000", false, same),
+    //case(18446744073709551616i128, val!(18446744073709551616i128), "c249010000000000000000", false, same),
+    //case(-18446744073709551617i128, val!(-18446744073709551617i128), "c349010000000000000000", false, same),
     case(-18446744073709551616i128, val!(-18446744073709551616i128), "3bffffffffffffffff", false, same),
     case(-1000i16,  val!(-1000i16),  "3903e7", false, same),
     case(-1000i32,  val!(-1000i32),  "3903e7", false, same),
@@ -177,6 +182,7 @@ macro_rules! map {
     case(-1i32,  val!(-1i32),  "3b0000000000000000", true, same),
     case(-1i64,  val!(-1i64),  "3b0000000000000000", true, same),
     case(-1i128, val!(-1i128), "3b0000000000000000", true, same),
+    /*
     case(0.0f32, val!(0.0f32), "f90000", false, Float),
     case(0.0f64, val!(0.0f64), "f90000", false, Float),
     case(-0.0f32, val!(-0.0f32), "f98000", false, Float),
@@ -226,12 +232,13 @@ macro_rules! map {
     case(-core::f64::NAN, val!(-core::f64::NAN), "faffc00000", true, Float),         // Not In RFC
     case(-core::f32::NAN, val!(-core::f32::NAN), "fbfff8000000000000", true, Float), // Not In RFC
     case(-core::f64::NAN, val!(-core::f64::NAN), "fbfff8000000000000", true, Float), // Not In RFC
+    */
     case(false, val!(false), "f4", false, same),
     case(true, val!(true), "f5", false, same),
     case(Value::Null, Value::Null, "f6", false, same),
     case(hex!(""), val!(&b""[..]), "40", false, same),
     case(hex!("01020304"), val!(&b"\x01\x02\x03\x04"[..]), "4401020304", false, same),
-    case(hex!("0102030405"), val!(&b"\x01\x02\x03\x04\x05"[..]), "5f42010243030405ff", true, same),
+    //case(hex!("0102030405"), val!(&b"\x01\x02\x03\x04\x05"[..]), "5f42010243030405ff", true, same),
     case("", val!(""), "60", false, ToOwned::to_owned),
     case("a", val!("a"), "6161", false, ToOwned::to_owned),
     case('a', val!('a'), "6161", false, same),
@@ -243,25 +250,26 @@ macro_rules! map {
     case('水', val!('水'), "63e6b0b4", false, same),
     case("𐅑", val!("𐅑"), "64f0908591", false, ToOwned::to_owned),
     case('𐅑', val!('𐅑'), "64f0908591", false, same),
-    case("streaming", val!("streaming"), "7f657374726561646d696e67ff", true, ToOwned::to_owned),
+    //case("streaming", val!("streaming"), "7f657374726561646d696e67ff", true, ToOwned::to_owned),
     case(cbor!([]).unwrap(), Vec::<Value>::new().into(), "80", false, same),
-    case(cbor!([]).unwrap(), Vec::<Value>::new().into(), "9fff", true, same),
+    //case(cbor!([]).unwrap(), Vec::<Value>::new().into(), "9fff", true, same),
     case(cbor!([1, 2, 3]).unwrap(), cbor!([1, 2, 3]).unwrap(), "83010203", false, same),
     case(cbor!([1, [2, 3], [4, 5]]).unwrap(), cbor!([1, [2, 3], [4, 5]]).unwrap(), "8301820203820405", false, same),
-    case(cbor!([1, [2, 3], [4, 5]]).unwrap(), cbor!([1, [2, 3], [4, 5]]).unwrap(), "9f018202039f0405ffff", true, same),
-    case(cbor!([1, [2, 3], [4, 5]]).unwrap(), cbor!([1, [2, 3], [4, 5]]).unwrap(), "9f01820203820405ff", true, same),
-    case(cbor!([1, [2, 3], [4, 5]]).unwrap(), cbor!([1, [2, 3], [4, 5]]).unwrap(), "83018202039f0405ff", true, same),
-    case(cbor!([1, [2, 3], [4, 5]]).unwrap(), cbor!([1, [2, 3], [4, 5]]).unwrap(), "83019f0203ff820405", true, same),
+    //case(cbor!([1, [2, 3], [4, 5]]).unwrap(), cbor!([1, [2, 3], [4, 5]]).unwrap(), "9f018202039f0405ffff", true, same),
+    //case(cbor!([1, [2, 3], [4, 5]]).unwrap(), cbor!([1, [2, 3], [4, 5]]).unwrap(), "9f01820203820405ff", true, same),
+    //case(cbor!([1, [2, 3], [4, 5]]).unwrap(), cbor!([1, [2, 3], [4, 5]]).unwrap(), "83018202039f0405ff", true, same),
+    //case(cbor!([1, [2, 3], [4, 5]]).unwrap(), cbor!([1, [2, 3], [4, 5]]).unwrap(), "83019f0203ff820405", true, same),
     case((1..=25).collect::<Vec<u8>>(), (1..=25).map(|x| x.into()).collect::<Vec<Value>>().into(), "98190102030405060708090a0b0c0d0e0f101112131415161718181819", false, same),
-    case((1..=25).collect::<Vec<u8>>(), (1..=25).map(|x| x.into()).collect::<Vec<Value>>().into(), "9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff", true, same),
+    //case((1..=25).collect::<Vec<u8>>(), (1..=25).map(|x| x.into()).collect::<Vec<Value>>().into(), "9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff", true, same),
     case(HashMap::<u8, u8>::new(), Value::Map(vec![]), "a0", false, same),
     case(BTreeMap::<u8, u8>::new(), Value::Map(vec![]), "a0", false, same),
     case(map!{1 => 2, 3 => 4}, cbor!({1 => 2, 3 => 4}).unwrap(), "a201020304", false, same),
     case(cbor!({"a" => 1, "b" => [2, 3]}).unwrap(), cbor!({"a" => 1, "b" => [2, 3]}).unwrap(), "a26161016162820203", false, same),
-    case(cbor!({"a" => 1, "b" => [2, 3]}).unwrap(), cbor!({"a" => 1, "b" => [2, 3]}).unwrap(), "bf61610161629f0203ffff", true, same),
+    //case(cbor!({"a" => 1, "b" => [2, 3]}).unwrap(), cbor!({"a" => 1, "b" => [2, 3]}).unwrap(), "bf61610161629f0203ffff", true, same),
     case(cbor!(["a", {"b" => "c"}]).unwrap(), cbor!(["a", {"b" => "c"}]).unwrap(), "826161a161626163", false, same),
-    case(cbor!(["a", {"b" => "c"}]).unwrap(), cbor!(["a", {"b" => "c"}]).unwrap(), "826161bf61626163ff", true, same),
-    case(cbor!({"Fun" => true, "Amt" => -2}).unwrap(), cbor!({"Fun" => true, "Amt" => -2}).unwrap(), "bf6346756ef563416d7421ff", true, same),
+    //case(cbor!(["a", {"b" => "c"}]).unwrap(), cbor!(["a", {"b" => "c"}]).unwrap(), "826161bf61626163ff", true, same),
+    // This test case previously deserialized an indefinite-length map. The new input bytes are for the same map but with an explicit length.
+    case(cbor!({"Fun" => true, "Amt" => -2}).unwrap(), cbor!({"Fun" => true, "Amt" => -2}).unwrap(), "a26346756ef563416d7421" /* "bf6346756ef563416d7421ff" */, true, same),
     case(map_big(), vmap_big(), "a56161614161626142616361436164614461656145", false, same),
     case(Option::<u8>::None, Value::Null, "f6", false, same), // Not In RFC
     case(Option::Some(7u8), val!(7u8), "07", false, same), // Not In RFC
@@ -275,13 +283,24 @@ macro_rules! map {
     case(Enum::Tuple(56, 67), cbor!({"Tuple" => [56, 67]}).unwrap(), "a1655475706c658218381843", false, same), // Not In RFC
     case(Enum::Struct { first: 78, second: 89 }, cbor!({ "Struct" => { "first" => 78, "second" => 89 }}).unwrap(), "a166537472756374a2656669727374184e667365636f6e641859", false, same), // Not In RFC
 )]
-fn codec<'de, T: Serialize + Clone, V: Debug + PartialEq + DeserializeOwned, F: Fn(T) -> V>(
+fn codec<
+    'de,
+    T: Debug + Serialize + Clone,
+    V: Debug + PartialEq + DeserializeOwned,
+    F: Fn(T) -> V,
+>(
     input: T,
     value: Value,
     bytes: &str,
     alternate: bool,
     equality: F,
 ) {
+    println!("input: {input:?}");
+    println!("value: {value:?}");
+    println!("bytes: {bytes:?}");
+    println!("alternative: {alternate:?}");
+    println!();
+
     let bytes = hex::decode(bytes).unwrap();
 
     if !alternate {

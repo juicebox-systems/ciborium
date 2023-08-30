@@ -12,6 +12,7 @@ use ciborium::{
 };
 
 #[test]
+#[ignore] // indeterminate-length array disallowed in strict deserializer
 fn array() {
     let bytes = [0x9f; 128 * 1024];
     match from_reader::<Value, _>(&bytes[..]).unwrap_err() {
@@ -21,6 +22,7 @@ fn array() {
 }
 
 #[test]
+#[ignore] // indeterminate-length map disallowed in strict deserializer
 fn map() {
     let bytes = [0xbf; 128 * 1024];
     match from_reader::<Value, _>(&bytes[..]).unwrap_err() {
@@ -30,6 +32,7 @@ fn map() {
 }
 
 #[test]
+#[ignore] // indeterminate-length bytes disallowed in strict deserializer
 fn bytes() {
     let bytes = [0x5f; 128 * 1024];
     match from_reader::<Value, _>(&bytes[..]).unwrap_err() {
@@ -39,6 +42,7 @@ fn bytes() {
 }
 
 #[test]
+#[ignore] // indeterminate-length text disallowed in strict deserializer
 fn text() {
     let bytes = [0x7f; 128 * 1024];
     match from_reader::<Value, _>(&bytes[..]).unwrap_err() {
