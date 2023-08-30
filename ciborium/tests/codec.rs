@@ -268,6 +268,7 @@ macro_rules! map {
     //case(cbor!({"a" => 1, "b" => [2, 3]}).unwrap(), cbor!({"a" => 1, "b" => [2, 3]}).unwrap(), "bf61610161629f0203ffff", true, same),
     case(cbor!(["a", {"b" => "c"}]).unwrap(), cbor!(["a", {"b" => "c"}]).unwrap(), "826161a161626163", false, same),
     //case(cbor!(["a", {"b" => "c"}]).unwrap(), cbor!(["a", {"b" => "c"}]).unwrap(), "826161bf61626163ff", true, same),
+    // This test case previously deserialized an indefinite-length map. The new input bytes are for the same map but with an explicit length.
     case(cbor!({"Fun" => true, "Amt" => -2}).unwrap(), cbor!({"Fun" => true, "Amt" => -2}).unwrap(), "a26346756ef563416d7421" /* "bf6346756ef563416d7421ff" */, true, same),
     case(map_big(), vmap_big(), "a56161614161626142616361436164614461656145", false, same),
     case(Option::<u8>::None, Value::Null, "f6", false, same), // Not In RFC
